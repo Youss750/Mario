@@ -39,7 +39,7 @@ var Mario = function (y, x, image) {
     this.fall = {
         power : 0,
         interval: null
-    }
+    };
     this.makeJump = function () {
         mario.y--;
         mario.jump.power--;
@@ -155,7 +155,7 @@ var Koopa = function (y, x, image) {
         koopa.move();
         koopa.update();
     }, 200);
-}
+};
 
 var Input = function (keys) {
     this.keys = {};
@@ -178,7 +178,7 @@ var Input = function (keys) {
             input.keys[e.code].isPressed = false;
         }
     });
-}
+};
 
 var Map = function (model) {
     this.map = [];
