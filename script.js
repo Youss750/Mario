@@ -75,7 +75,7 @@ var Mario = function (y, x, image) {
         if (mario.input.keys.ArrowLeft.isPressed || mario.input.keys.ArrowLeft.pressed) {
             mario.x--;
             mario.input.keys.ArrowLeft.pressed = false;
-            if (map.checkCollision(mario) != undefined) {
+            if (map.checkCollision(mario) !== undefined) {
                 mario.x++;
             }
         }
