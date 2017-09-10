@@ -51,58 +51,64 @@ var Mario = function (y, x, image) {
         if (map.checkCollision(mario) !== undefined) {
             mario.y++;
         }
-        // si mario saute dans un koopa, il meurt
     };
     this.fall = function () {
-       if (mario.jump.power === 0) {
-           mario.y++;
-           if(map.checkCollision(this) instanceof Koopa){
+     if (mario.jump.power === 0) {
+         mario.y++;
+         if(map.checkCollision(this) instanceof Koopa){
             map.checkCollision(this).die();
         }
+        if(map.checkCollision(this) instanceof Peach){
+            alert("Bien jouez, vous avez sauvez peach en la sautant !");
+            location.reload();
+
+        }
         if (map.checkCollision(mario) !== undefined) {
-           mario.y--;
-           mario.falling = false;
-       }
+         mario.y--;
+         mario.falling = false;
+     }
+ }
 
-   }
-        // si mario tombe sur un koopa, il meurt
-    };
-    this.die = function () {
-        clearInterval(this.interval);
-        map.delete(this);
-    };
-    this.move = function () {
-        if (mario.input.keys.ArrowLeft.isPressed || mario.input.keys.ArrowLeft.pressed) {
-            mario.x--;
-            mario.input.keys.ArrowLeft.pressed = false;
-            if (map.checkCollision(mario) !== undefined) {
-                mario.x++;
-            }
-        }
-        if (mario.input.keys.ArrowRight.isPressed || mario.input.keys.ArrowRight.pressed) {
-            mario.x++;
-            mario.input.keys.ArrowRight.pressed = false;
-            if (map.checkCollision(mario) !== undefined) {
-                mario.x--;
-            }
-        }
-        if(mario.input.keys.Space.pressed || mario.input.keys.Space.isPressed ){ 
-            if (mario.falling == false) {
-                mario.jump.power = 3;
-                mario.falling = true;
-                mario.jump.interval = setInterval(mario.makeJump, 100);
-            }
-            mario.input.keys.Space.pressed = false;    
-        }
-        // si mario rencontre un koopa après son déplacement, il meurt
-    };
-    this.interval = setInterval(function () {
-        mario.fall();
-        mario.move();
-        mario.update();
-    }, 100);
 };
-
+this.die = function () {
+    clearInterval(this.interval);
+    map.delete(this);
+    alert("Perdu !");
+    location.reload();
+};
+this.move = function () {
+ if (mario.input.keys.ArrowLeft.isPressed || mario.input.keys.ArrowLeft.pressed) {
+    mario.x--;
+    mario.input.keys.ArrowLeft.pressed = false;
+    if (map.checkCollision(mario) !== undefined) {
+        mario.x++;
+    }
+}
+if (mario.input.keys.ArrowRight.isPressed || mario.input.keys.ArrowRight.pressed) {
+    mario.x++;
+    mario.input.keys.ArrowRight.pressed = false;
+    if (map.checkCollision(mario) !== undefined) {
+        mario.x--;
+    }
+}
+if(mario.input.keys.Space.pressed || mario.input.keys.Space.isPressed ){ 
+    if (mario.falling == false) {
+        mario.jump.power = 3;
+        mario.falling = true;
+        mario.jump.interval = setInterval(mario.makeJump, 100);
+    }
+    mario.input.keys.Space.pressed = false;    
+}
+};
+this.interval = setInterval(function () {
+    mario.fall();
+    mario.move();
+    mario.update();
+}, 100);
+};
+var Peach = function (y,x, image){
+   Cell.call(this,y , x, image);
+}
 var Koopa = function (y, x, image) {
     Cell.call(this,y , x, image);
     var koopa = this;
@@ -115,7 +121,6 @@ var Koopa = function (y, x, image) {
         if(map.koopa_count == 0) {
             map.koopa_all_dead = true;
             map.no_f5 = true;
-            console.log(map.koopa_all_dead);
             return map.generateMap();
         }
     };
@@ -196,11 +201,11 @@ var Map = function (model) {
                     this.map.push(new Koopa(y, x, 'assets/shell.png'));
                     this.koopa_count++;
                 }
-                if (leet === "m"&& this.no_f5 == false) {
+                if (leet === "m" && this.no_f5 == false) {
                     this.map.push(new Mario(y, x, 'assets/Mario.png'));
                 }
                 if(leet === "p" && this.koopa_all_dead == true){
-                    this.map.push(new Cell(y, x, 'assets/peach.png'));
+                    this.map.push(new Peach(y, x, 'assets/peach.png'));
                 }
             }
         }
@@ -216,23 +221,21 @@ var Map = function (model) {
         this.map.splice(this.map.indexOf(cell),1);
         document.body.removeChild(cell.html);
         delete cell;
-        // retire la cell de map
-        // retire la cell du dom
-        // delete la cell
+
     };
 };
 
 var schema = [
 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
 'w                                      w',
-'w                         k            w',
+'w                               k      w',
 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww    w',
 'w                                      w',
 'w                                      w',
 'w                                      w',
 'w                                      w',
 'w                                      w',
-'w       k      w                       w',
+'w      k       w                       w',
 'wwwwwwwwwwwwwwwww                      w',
 'w                   w        w  k      w',
 'w            wwwww  wwwwwww  wwwwwwwwwww',
@@ -240,7 +243,7 @@ var schema = [
 'w           ww              w          w',
 'w          www               ww        w',
 'w         wwww                 ww      w',
-'w   pm   wwwww k     w          k      w',
+'w   pm   wwwww k     w   k             w',
 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww'
 ];
 var nbr_koopa = 0;
